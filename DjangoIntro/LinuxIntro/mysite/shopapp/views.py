@@ -1,7 +1,10 @@
 from timeit import default_timer
 
+from django.contrib.auth.models import Group
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render
+from .models import Product, Order
+
 
 def shop_apps(request: HttpRequest):
     PRODUCTS = [
@@ -31,3 +34,23 @@ def shop_apps(request: HttpRequest):
         filter_product = [product for product in PRODUCTS if product["price"] <= int(max_price)]
 
     return render(request, "shopapp/first_page.html", {"products": filter_product})
+
+
+def groups_list(request: HttpRequest):
+    context = {
+        "groups": Group.objects.prefetch_related('permissions').all(),
+    }
+    return render(request, 'shopapp/groups-list.html', context=context)
+
+
+def products_list(request:HttpRequest):
+    context = {
+        "products": Product.objects.all(),
+    }
+    return render(request, 'shopapp/product_list.html', context=context)
+
+def orders_list(request: HttpRequest):
+    context = {
+        "orders": Order.objects.select_related("user").prefetch_related("products").all(),
+    }
+    return render(request, 'shopapp/orders_list.html', context=context)

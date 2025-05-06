@@ -1,36 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Products list</title>
-</head>
-<body>
-<h1>Список товаров</h1>
-<div>
-    <form method="get">
-        <label for="type">Тип фильтра:</label>
-        <select name="type" id="type">
-            <option value="">Все</option>
-            <option value="laptop">Ноутбуки</option>
-            <option value="smartphone">Смартфоны</option>
-            <option value="desktop">Настольный компьютер</option>
-        </select>
-        <label for="min_price">Минимальная цена</label>
-        <input type="number" name="min_price" id="min_price" placeholder="0">
+{% extends 'shopapp/base.html' %}
 
-        <label for="max_price">Максимальная цена</label>
-        <input type="number" name="max_price" id="max_price" placeholder="3000">
+{% block title %}
+    Shop Index
+{% block body %}
+    <h1>Hello Magazin</h1>
 
-        <button type="submit">Найти</button>
-    </form>
+    <div>
+        <ul>
+            {% for name, price in products %}
+                <li>{{ name }} ({{ name|length }}) for ${{ price }}</li>
+                {% if name|length_is: '7' %}
+                    <span>Lucky Product!</span>
+                {% endif %}
+            {% empty %}
+                No products
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        Time running: {{ time_running }}
+    </div>
 
-</div>
-<ul>
-    {% for product in products %}
-    <li>{{ product.name }} - ${{ product.price }}</li>
-    {% empty %}
-    <li>Нет товаров</li>
-    {% endfor %}
-</ul>
-</body>
-</html>
+    <div>
+        {% lorem 3 p random %}
+    </div>
+{% endblock %}
