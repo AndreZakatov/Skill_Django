@@ -1,14 +1,21 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Product(models.Model):
     class Meta:
         ordering = ["name", "price"]
 
     name = models.CharField(max_length=200)
-    description= models.TextField(null=False, blank=True)
-    price = models.DecimalField(default=0, max_digits=8, decimal_places=2)
-    discount = models.PositiveSmallIntegerField(default=0)
+    description= models.TextField(null=False,
+                                  blank=True)
+    price = models.DecimalField(default=0,
+                                max_digits=8,
+                                decimal_places=2,
+                                validators=[MinValueValidator(0),
+                                ])
+    discount = models.PositiveSmallIntegerField(default=0,
+                                                validators=[MaxValueValidator(100)])
     create_at = models.DateTimeField(auto_now_add=True)
     archived = models.BooleanField(default=False)
 
