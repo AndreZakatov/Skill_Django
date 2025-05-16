@@ -1,0 +1,13 @@
+{% extends 'RequestMiddlewares/base.html' %}
+
+{% block title %}
+    Превышение лимита
+{% endblock %}
+
+{% block body %}
+    {%  if error %}
+        <div style="color: red; margin-top: 10px;">
+            {{ error }}
+        </div>
+    {% endif %}
+{% endblock %}

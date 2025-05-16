@@ -1,0 +1,17 @@
+{% extends 'RequestMiddlewares/base.html' %}
+
+{% block title %}
+    Demo request params
+{% endblock %}
+
+{% block body %}
+    <h1>Hello {% firstof request.GET.name 'User' %}</h1>
+
+    <div>
+        <pre>
+            a = '{{ a }}'
+            b = '{{ b }}'
+            resault = '{{ resault }}'
+        </pre>
+    </div>
+{% endblock %}
