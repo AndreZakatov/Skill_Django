@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import process_get_view, user_form, handle_file_upload
 
-app_name = "RequestMiddlewares"
+app_name = "RequestmiddlewaresConfig"
 
 urlpatterns = [
     path("get/", process_get_view, name="get_view"),

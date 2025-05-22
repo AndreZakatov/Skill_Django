@@ -11,4 +11,4 @@ class ProductForm(forms.ModelForm):
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = "delivery_address", "promocode", "products", "user"
+        fields = "user", "delivery_address", "promocode"
