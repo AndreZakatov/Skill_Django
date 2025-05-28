@@ -298,7 +298,7 @@
             var closeButton = document.querySelector('.close-popup');
             var form = document.querySelector('.popup-form');
             
-            // Открытие попапа
+            // Открытие окна попапа
             for (let i = 0; i < popupButtons.length; i++) {
                 popupButtons[i].addEventListener('click', function(e){
                     e.preventDefault();
@@ -321,7 +321,6 @@
             // Обработка формы
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                // Здесь можно добавить отправку формы
                 alert('Форма отправлена!');
                 container.style.display = 'none';
             });
