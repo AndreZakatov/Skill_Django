@@ -28,15 +28,19 @@ class ProductsListView(ListView):
     queryset = Product.objects.filter(archived=False)
 
 
-class ProductCreateView(PermissionRequiredMixin, CreateView):
-    permission_required = "shopapp:add_product"
+class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+
     model = Product
     fields = ["name", "price", "description", "discount"]
     success_url = reverse_lazy("shopapp:products_list")
     def form_valid(self, form):
         form.instance.created_by = self.request.user
         return super().form_valid(form)
-
+    def test_func(self):
+        user = self.request.user
+        return (
+            user.has_perm("shopapp.add_product")
+        )
 
 class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
