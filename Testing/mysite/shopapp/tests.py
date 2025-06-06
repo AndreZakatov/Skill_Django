@@ -16,8 +16,14 @@ class ProductCreateViewTestCase(TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.product_name = "".join(choices(ascii_letters, k=10))
-        Product.objects.filter(name=cls.product_name)
+        
+
+    @classmethod
+    def tearDownClass(cls):
+        Product.objects.filter(name=cls.product_name).delete()
+        super().tearDownClass()
 
     def test_create_product(self):
         response = self.client.post(
@@ -29,7 +35,7 @@ class ProductCreateViewTestCase(TestCase):
                 "discount": "10",
             }
         )
-        self.assertRedirects(response, reverse("shopapp:product_list"))
+        self.assertRedirects(response, reverse("shopapp:products_list"))
         self.assertTrue(
             Product.objects.filter(name=self.product_name)
         )
@@ -64,7 +70,17 @@ class ProductListViewTestCase(TestCase):
     ]
 
     def test_products(self):
+        print("\n=== Test Products List ===")
+        print("Products from fixtures:")
+        for product in Product.objects.all():
+            print(f"Product: pk={product.pk}, name={product.name}, price={product.price}")
+        
         response = self.client.get(reverse("shopapp:products_list"))
+        
+        print("\nProducts from response context:")
+        for product in response.context["products"]:
+            print(f"Product: pk={product.pk}, name={product.name}, price={product.price}")
+        
         self.assertQuerySetEqual(
             qs=Product.objects.filter(archived=False).all(),
             values=(p.pk for p in response.context["products"]),
@@ -117,9 +133,9 @@ class OrderDetailViewTestCase(TestCase):
             price=777,
             discount=10,
         )
-
+ 
         cls.order = Order.objects.create(
-            delivery_address = "Test address puplin hous",
+            delivery_address = "Test address puplin",
             promocode = "TESTFORTEST",
             user = cls.user,
         )
@@ -135,9 +151,16 @@ class OrderDetailViewTestCase(TestCase):
         self.client.force_login(self.user)
 
     def test_order_details(self):
+        print("\n=== Test Order Details ===")
+        print(f"Created order: pk={self.order.pk}, address={self.order.delivery_address}, promocode={self.order.promocode}")
+        
         response = self.client.get(
             reverse("shopapp:order_details", kwargs={"pk": self.order.pk})
         )
+        
+        print(f"Response status: {response.status_code}")
+        print(f"Response context order: pk={response.context['object'].pk}, address={response.context['object'].delivery_address}, promocode={response.context['object'].promocode}")
+        
         self.assertContains(response, self.order.delivery_address)
         self.assertContains(response, self.order.promocode)
         
