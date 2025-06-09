@@ -1,5 +1,5 @@
 from django.contrib.auth.views import LoginView
-from django.urls import path
+from django.urls import path, reverse_lazy
 
 
 from .views import (
@@ -11,6 +11,9 @@ from .views import (
     AboutMeView,
     RegisterView,
     FooBarView,
+    UserListView,
+    UserDetailView,
+    UserProfileUpdateView,
 )
 
 app_name = "myauth"
@@ -26,9 +29,12 @@ urlpatterns = [
         name="login",
     ),
     # path("logout/", logout_view, name="logout"),
-    path("logout/", MyLogoutView.as_view(), name="logout"),
+    path("logout/", MyLogoutView.as_view(next_page=reverse_lazy("myauth:login"), http_method_names=['get', 'post']), name="logout"),
     path("about-me/", AboutMeView.as_view(), name="about-me"),
     path("register/", RegisterView.as_view(), name="register"),
+    path("users/", UserListView.as_view(), name="users-list"),
+    path("users/<int:pk>/", UserDetailView.as_view(), name="user-detail"),
+    path("users/<int:pk>/update/", UserProfileUpdateView.as_view(), name="user-profile-update"),
 
     path("cookie/get/", get_cookie_view, name="cookie-get"),
     path("cookie/set/", set_cookie_view, name="cookie-set"),

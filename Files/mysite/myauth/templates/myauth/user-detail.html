@@ -1,0 +1,35 @@
+{% extends 'myauth/base.html' %}
+
+{% block title %}
+  {{ title }}
+{% endblock %}
+
+{% block body %}
+  <h1>User Details</h1>
+  <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc;">
+    <div>
+      {% if user_obj.userprofile.avatar %}
+        <img src="{{ user_obj.userprofile.avatar.url }}"
+             alt="{{ user_obj.username }}'s avatar"
+             style="width: 200px; height: 200px;">
+      {% else %}
+        <p>No avatar</p>
+      {% endif %}
+    </div>
+    <div>
+      <p><strong>Username:</strong> {{ user_obj.username }}</p>
+      <p><strong>First name:</strong> {{ user_obj.first_name }}</p>
+      <p><strong>Last name:</strong> {{ user_obj.last_name }}</p>
+      <p><strong>Email:</strong> {{ user_obj.email }}</p>
+      {% if user_obj.userprofile.bio %}
+        <p><strong>Bio:</strong> {{ user_obj.userprofile.bio }}</p>
+      {% endif %}
+    </div>
+  </div>
+  <div>
+    {% if can_edit %}
+      <a href="{% url 'myauth:user-profile-update' pk=user_obj.pk %}" class="button">Edit Profile</a>
+    {% endif %}
+    <a href="{% url 'myauth:users-list' %}">Back to users list</a>
+  </div>
+{% endblock %} 
