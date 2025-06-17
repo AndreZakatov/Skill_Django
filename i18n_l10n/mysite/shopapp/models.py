@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+from django.utils.translation import gettext_lazy as _
+
 
 def product_preview_directory_path(instance: "Product", filename: str) -> str:
     return "products/product_{pk}/preview/{filename}".format(
@@ -12,11 +14,13 @@ def product_preview_directory_path(instance: "Product", filename: str) -> str:
 class Product(models.Model):
     class Meta:
         ordering = ["name", "price"]
+        verbose_name = _("Product")
+        verbose_name_plural = _("Products")
 
-    name = models.CharField(max_length=100)
-    description = models.TextField(null=False, blank=True)
-    price = models.DecimalField(default=0, max_digits=8, decimal_places=2)
-    discount = models.SmallIntegerField(default=0)
+    name = models.CharField(_("Name"), max_length=100)
+    description = models.TextField(_("Description"), null=False, blank=True)
+    price = models.DecimalField(_("Price"), default=0, max_digits=8, decimal_places=2)
+    discount = models.SmallIntegerField(_("Discount"), default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     archived = models.BooleanField(default=False)
     preview = models.ImageField(null=True, blank=True, upload_to=product_preview_directory_path)
@@ -39,6 +43,11 @@ class ProductImage(models.Model):
 
 
 class Order(models.Model):
+
+    class Meta:
+        verbose_name = _("Order")
+        verbose_name_plural = _("Orders")
+
     delivery_address = models.TextField(null=True, blank=True)
     promocode = models.CharField(max_length=20, null=False, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

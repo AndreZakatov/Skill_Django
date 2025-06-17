@@ -1,0 +1,112 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-06-11 15:13+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\myauth\views.py:17
+msgid "welcome hello word!"
+msgstr ""
+
+#: .\myauth\views.py:23
+#, python-brace-format
+msgid "one product"
+msgid_plural "{count} products"
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\mysite\settings.py:116
+msgid "English"
+msgstr ""
+
+#: .\mysite\settings.py:117
+msgid "Russian"
+msgstr ""
+
+#: .\shopapp\admin.py:18
+msgid "Archive products"
+msgstr ""
+
+#: .\shopapp\admin.py:23
+msgid "Unarchive products"
+msgstr ""
+
+#: .\shopapp\admin.py:52
+msgid "Images"
+msgstr ""
+
+#: .\shopapp\admin.py:55
+msgid "Extra options"
+msgstr ""
+
+#: .\shopapp\admin.py:58
+msgid "Extra options. Field 'archived' is for soft delete"
+msgstr ""
+
+#: .\shopapp\models.py:17
+msgid "Product"
+msgstr ""
+
+#: .\shopapp\models.py:18 .\shopapp\templates\shopapp\products-list.html:10
+msgid "Products"
+msgstr ""
+
+#: .\shopapp\models.py:20
+msgid "Name"
+msgstr ""
+
+#: .\shopapp\models.py:21
+msgid "Description"
+msgstr ""
+
+#: .\shopapp\models.py:22
+msgid "Price"
+msgstr ""
+
+#: .\shopapp\models.py:23 .\shopapp\templates\shopapp\products-list.html:18
+msgid "Discount"
+msgstr ""
+
+#: .\shopapp\models.py:48
+msgid "Order"
+msgstr ""
+
+#: .\shopapp\models.py:49
+msgid "Orders"
+msgstr ""
+
+#: .\shopapp\templates\shopapp\products-list.html:6
+msgid "Products list"
+msgstr ""
+
+#: .\shopapp\templates\shopapp\products-list.html:16
+msgctxt "product name"
+msgid "Name"
+msgstr ""
+
+#: .\shopapp\templates\shopapp\products-list.html:17
+msgctxt "product price"
+msgid "Price"
+msgstr ""
+
+#: .\shopapp\templates\shopapp\products-list.html:29
+msgid "No products yet"
+msgstr ""
+
+#: .\shopapp\templates\shopapp\products-list.html:34
+msgid "Create a new product"
+msgstr ""

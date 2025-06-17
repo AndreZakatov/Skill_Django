@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.db.models import QuerySet
 from django.http import HttpRequest
 
+from django.utils.translation import gettext_lazy as _
 from .models import Product, Order, ProductImage
 from .admin_mixins import ExportAsCSVMixin
 
@@ -14,12 +15,12 @@ class ProductInline(admin.StackedInline):
     model = ProductImage
 
 
-@admin.action(description="Archive products")
+@admin.action(description=_("Archive products"))
 def mark_archived(modeladmin: admin.ModelAdmin, request: HttpRequest, queryset: QuerySet):
     queryset.update(archived=True)
 
 
-@admin.action(description="Unarchive products")
+@admin.action(description=_("Unarchive products"))
 def mark_unarchived(modeladmin: admin.ModelAdmin, request: HttpRequest, queryset: QuerySet):
     queryset.update(archived=False)
 
@@ -44,17 +45,17 @@ class ProductAdmin(admin.ModelAdmin, ExportAsCSVMixin):
         (None, {
            "fields": ("name", "description"),
         }),
-        ("Price options", {
+        (("Price options"), {
             "fields": ("price", "discount"),
             "classes": ("wide", "collapse"),
         }),
-        ("Images", {
+        (_("Images"), {
             "fields": ("preview", ),
         }),
-        ("Extra options", {
+        (_("Extra options"), {
             "fields": ("archived",),
             "classes": ("collapse",),
-            "description": "Extra options. Field 'archived' is for soft delete",
+            "description": _("Extra options. Field 'archived' is for soft delete"),
         })
     ]
 

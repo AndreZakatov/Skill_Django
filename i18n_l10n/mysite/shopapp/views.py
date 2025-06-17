@@ -21,6 +21,7 @@ class ShopIndexView(View):
         context = {
             "time_running": default_timer(),
             "products": products,
+            "items": 12,
         }
         return render(request, 'shopapp/shop-index.html', context=context)
 
@@ -41,8 +42,17 @@ class ProductsListView(ListView):
 
 class ProductCreateView(CreateView):
     model = Product
-    fields = "name", "price", "description", "discount", "preview"
+    form_class = ProductForm
     success_url = reverse_lazy("shopapp:products_list")
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        for image in form.files.getlist("images"):
+            ProductImage.objects.create(
+                product=self.object,
+                image=image,
+            )
+        return response
 
 
 class ProductUpdateView(UpdateView):
