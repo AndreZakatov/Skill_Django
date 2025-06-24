@@ -120,6 +120,7 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
         Order.objects
         .select_related("user")
         .prefetch_related("products")
+        
     )
 
 

@@ -1,0 +1,22 @@
+<h1>Список статей</h1>
+<ul>
+  {% for article in articles %}
+    <li>
+      <h2>{{ article.title }}</h2>
+      <p><strong>Дата публикации:</strong> {{ article.published_at|default:article.pub_date }}</p>
+      <p><strong>Автор:</strong> {{ article.author.name }}</p>
+      <p><strong>Категория:</strong> {{ article.category.name }}</p>
+      <p><strong>Теги:</strong>
+        {% if article.tags.all %}
+          {% for tag in article.tags.all %}
+            {{ tag.name }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        {% else %}
+          Нет тегов
+        {% endif %}
+      </p>
+    </li>
+  {% empty %}
+    <li>Нет статей.</li>
+  {% endfor %}
+</ul>
