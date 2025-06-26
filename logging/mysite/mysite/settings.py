@@ -27,8 +27,14 @@ SECRET_KEY = 'django-insecure-hvxn%qq=gyw^4*o2lo1#bw0=wh#ux9s8h!=@c608arf_gz3+^7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["0.0.0.0",
+                 "127.0.0.1",]
 
+
+INTERNAL_IPS = [
+    "127.0.0.1", 
+    
+]
 
 # Application definition
 
@@ -42,6 +48,8 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'django_filters',
+    'debug_toolbar',
+
 
     'shopapp.apps.ShopappConfig',
     'myauth.apps.MyauthConfig',
@@ -55,13 +63,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'mysite.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'BACKEND': 'django.template.backends.django.DjangoTemplates', 
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -144,3 +153,26 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = reverse_lazy("myauth:about-me")
 LOGIN_URL = reverse_lazy("myauth:login")
+
+
+# Настройки логирования Django
+LOGGING = {
+    'version': 1,  # Версия схемы конфигурации логирования (1 — единственная доступная на данный момент)
+    'disable_existing_loggers': False,  # Не отключать существующие логгеры Django
+    'formatters': {
+        'simple': {  # Форматтер с простым форматом вывода
+            'format': '[{levelname}] {asctime} {name}: {message}',  # Формат сообщения лога
+            'style': '{',  # Используем стиль форматирования str.format()
+        },
+    },
+    'handlers': {
+        'console': {  # Обработчик, который выводит логи в консоль
+            'class': 'logging.StreamHandler',  # Класс обработчика — потоковый (stdout)
+            'formatter': 'simple',  # Используем форматтер 'simple'
+        },
+    },
+    'root': {
+        'handlers': ['console'],  # Для корневого логгера используем обработчик 'console'
+        'level': 'INFO',  # Минимальный уровень логирования — INFO
+    },
+}
