@@ -1,4 +1,5 @@
 from timeit import default_timer
+from csv import DictWriter
 
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, reverse
@@ -8,11 +9,17 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from rest_framework.request import Request
+from rest_framework.parsers import MultiPartParser
 from django_filters.rest_framework import DjangoFilterBackend
+from django.contrib.syndication.views import Feed
 
 from .forms import ProductForm
 from .models import Product, Order, ProductImage
 from .serializers import ProductSerializer
+from .common import save_csv_products
 
 
 class ProductViewSet(ModelViewSet):
@@ -36,6 +43,42 @@ class ProductViewSet(ModelViewSet):
         "price",
         "discount",
     ]
+
+    @action(methods=["get"], detail=False)
+    def download_csv(self, request: Request):
+        response = HttpResponse(content_type="text/csv")
+        filename = "products-export.csv"
+        response["Content-Disposition"] = f"attachment; filename={filename}"
+        queryset = self.filter_queryset(self.get_queryset())
+        fields = [
+            "name",
+            "description",
+            "price",
+            "discount",
+        ]
+        queryset = queryset.only(*fields)
+        writer = DictWriter(response, fieldnames=fields)
+        writer.writeheader()
+
+        for product in queryset:
+            writer.writerow({
+                field: getattr(product, field)
+                for field in fields
+            })
+        return response
+    
+    @action(
+            detail=False,
+            methods=["post"],
+            parser_classes=[MultiPartParser],
+            )
+    def upload_csv(self, request:Request): 
+        save_csv_products(
+            request.FILES["file"].file,
+            encoding=request.encoding,
+        )
+        serializer = self.get_serializer(products, many=True)
+        return Response(serializer)
 
 
 class ShopIndexView(View):
@@ -135,3 +178,22 @@ class ProductsDataExportView(View):
             for product in products
         ]
         return JsonResponse({"products": products_data})
+
+
+class LatestProductsFeed(Feed):
+    title = "Latest Products"
+    link = "/shop/products/latest/feed/"
+    description = "New products in the shop."
+
+    def items(self):
+        return Product.objects.filter(archived=False).order_by('-created_at')[:10]
+
+    def item_title(self, item):
+        return item.name
+
+    def item_description(self, item):
+        return item.description
+
+    def item_link(self, item):
+        return item.get_absolute_url()
+ 
