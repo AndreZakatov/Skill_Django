@@ -2,11 +2,12 @@ from csv import DictWriter
 from timeit import default_timer
 
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, reverse
+from django.shortcuts import render, reverse, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth import get_user_model
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -14,6 +15,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
+from django.core.cache import cache
 
 from .common import save_csv_products
 from .forms import ProductForm
@@ -178,3 +180,40 @@ class ProductsDataExportView(View):
             for product in products
         ]
         return JsonResponse({"products": products_data})
+
+
+User = get_user_model()
+
+class UserOrdersListView(LoginRequiredMixin, ListView):
+    model = Order
+    template_name = "shopapp/user-orders.html"
+    context_object_name = "orders"
+
+    def get_queryset(self):
+        user_id = self.kwargs["user_id"]
+        self.owner =get_object_or_404(User, pk=user_id)
+        return Order.objects.filter(user=self.owner)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["owner"] = self.owner
+        return context
+    
+
+def export_user_orders(request, user_id):
+    # Генерация ключа с учетом индентификатора пользователя
+    cache_key = f"user_orders_export_{user_id}"
+    # Загрузка данных пользователя
+    data = cache.get(cache_key)
+    if data is not None:
+        return JsonResponse(data, safe=False)
+    
+    user = get_object_or_404(User, pk=user_id)
+    # сортировка заказаов по рк
+    orders = Order.objects.filter(user=user).order_by("pk")
+    # Забираем нужные поля
+    orders_data = list(orders.values("id", "delivery_address", "promocode", "created_at"))
+
+    cache.set(cache_key, orders_data, 300)
+
+    return JsonResponse(orders_data, safe=False)

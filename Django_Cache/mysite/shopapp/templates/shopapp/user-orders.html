@@ -1,0 +1,35 @@
+{% extends 'shopapp/base.html'%}
+
+{% load cache %}
+
+{% block title %}
+User orders
+{% endblock%}
+
+{% block body %}
+    <div>
+        <h1>
+            {% if orders %}
+                Orders of {{ owner.username }}
+            {% else %}
+                User {{ owner.username }} has no orders yet
+            {% endif %}
+        </h1>
+
+        <a href="{% url 'shopapp:user_orders_export' owner.pk %}" class="btn btn-primary" target="_blank">
+            Экспорт в JSON
+        </a>    
+
+        <h2>
+            {% cache 300 user_orders_list owner.pk %}
+            <ul>
+                {% for order in orders %}
+                    <li>
+                        Order #{{ order.pk }} - {{ order.delivery_address }} ({{ order.created_at }})
+                    </li>
+                {% endfor%}
+            </ul>
+            {% endcache %}
+        </h2>
+    </div>
+{% endblock %}
